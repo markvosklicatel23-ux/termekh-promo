@@ -361,6 +361,33 @@ section { padding:40px 0; }
   overflow:hidden;
 }
 
+/* Фоновое изображение Хана Соло.
+   Положи han-solo.png рядом с index.html.
+   Если файл назовёшь иначе — поменяй путь ниже. */
+.hall-card::before {
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  right:0;
+  bottom:0;
+  width:58%;
+  background-image:
+    linear-gradient(90deg, #211f20 0%, rgba(33,31,32,.35) 38%, rgba(33,31,32,.08) 100%),
+    url("han-solo.png");
+  background-repeat:no-repeat;
+  background-position:center, right center;
+  background-size:cover, contain;
+  opacity:.34;
+  pointer-events:none;
+}
+
+/* Содержимое карточки располагается поверх фонового изображения */
+.hall-card > * {
+  position:relative;
+  z-index:1;
+}
+
 .hall-top {
   text-align:center;
   margin-bottom:20px;
@@ -407,8 +434,12 @@ section { padding:40px 0; }
   font-weight:900;
 }
 
-.hero-row:nth-child(-n+3) .hero-number {
+/* Все участники равны: единое золотое оформление */
+.hero-number,
+.hero-name,
+.hero-star {
   color:var(--gold);
+  font-weight:800;
 }
 
 .hero-name {
@@ -542,6 +573,11 @@ footer {
 }
 
 @media(max-width:480px) {
+  .hall-card::before {
+    width:75%;
+    opacity:.23;
+    background-position:center, right center;
+  }
   .wrap { width:min(100% - 26px,1080px); }
   header { padding:17px 0; }
   .tag { font-size:10px; }
