@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b16">
+<title>Арена будущих баталий</title>
+<style>
+:root{--bg:#080b16;--panel:#111a2d;--text:#f4f6ff;--muted:#a8b2ca;--gold:#ffd777;--blue:#83baff;--red:#ff665f;--line:rgba(255,255,255,.13)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 18% 0%,#202c4b 0,transparent 38%),radial-gradient(ellipse at 85% 25%,#382026 0,transparent 34%),var(--bg);overflow-x:hidden}
+.wrap{width:min(1050px,calc(100% - 32px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:22px 0}.brand{font-weight:900;letter-spacing:1px}.back{color:var(--muted);text-decoration:none;border:1px solid var(--line);padding:9px 13px;border-radius:12px;font-size:13px}.back:hover{color:white;border-color:var(--gold)}
+.intro{text-align:center;padding:38px 0 28px}.eyebrow{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:4px}.intro h1{font-size:clamp(35px,7vw,68px);letter-spacing:-2px;line-height:1;margin:18px 0 12px}.intro p{color:var(--muted);max-width:620px;margin:auto;line-height:1.6}
+.arena{position:relative;overflow:hidden;border:1px solid rgba(255,215,119,.24);border-radius:26px;background:linear-gradient(145deg,rgba(22,31,52,.96),rgba(10,14,27,.98));padding:clamp(16px,3vw,30px);box-shadow:0 25px 80px #0007}.arena:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(255,215,119,.10),transparent 38%);pointer-events:none}.arena>*{position:relative;z-index:1}
+.matchup{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px}.fighter{text-align:center;min-width:0}.portrait{height:clamp(180px,31vw,330px);border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#080d1a;position:relative;box-shadow:0 12px 35px #0006}.portrait img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s,filter 1.2s}.fighter:hover .portrait img{transform:scale(1.045)}.fighter h2{margin:14px 0 4px;font-size:clamp(18px,3vw,27px)}.fighter p{margin:0;color:var(--muted);font-size:12px}.vs{font-size:clamp(22px,5vw,42px);font-weight:1000;color:var(--gold);text-shadow:0 0 24px #ffd77766}
+.choose{margin-top:15px;width:100%;border:1px solid var(--line);border-radius:13px;padding:13px 10px;font:inherit;font-weight:900;cursor:pointer;transition:.25s}.choose.obi{background:linear-gradient(100deg,#dceaff,#8dbbff);color:#101a2b}.choose.maul{background:linear-gradient(100deg,#ffb09b,#e64d4d);color:#260d10}.choose:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.status{text-align:center;margin:18px auto 0;color:var(--muted);font-size:14px;line-height:1.6}.timer{font-size:clamp(25px,5vw,38px);font-weight:1000;letter-spacing:2px;color:var(--gold);text-align:center;margin:18px 0 6px;font-variant-numeric:tabular-nums}.vote-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px auto 0;max-width:680px}.stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:#ffffff08;text-align:center}.stat strong{display:block;font-size:25px;margin-bottom:4px}.bar{height:10px;background:#ffffff18;border-radius:99px;overflow:hidden;margin-top:9px}.bar span{display:block;height:100%;width:0;transition:width .5s;border-radius:99px}.bar .obi-bar{background:#8dbbff}.bar .maul-bar{background:#ef6464}.result{display:none;margin-top:26px;text-align:center;animation:rise .8s both}.result.show{display:block}.result-kicker{color:var(--gold);font-size:11px;letter-spacing:4px;font-weight:900}.result h2{font-size:clamp(28px,6vw,52px);margin:9px 0 15px;text-transform:uppercase;text-shadow:0 0 25px #ffd77755}.victory-frame{position:relative;max-width:760px;height:clamp(220px,45vw,430px);margin:0 auto;border-radius:19px;overflow:hidden;border:1px solid rgba(255,215,119,.45);background:#050812;box-shadow:0 0 55px rgba(255,215,119,.13)}.victory-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity 1.5s ease,transform 4s ease}.victory-frame img.active{opacity:1;transform:scale(1)}.victory-overlay{position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.78));display:flex;align-items:flex-end;justify-content:center;padding:22px;font-size:clamp(16px,3vw,25px);font-weight:1000;letter-spacing:2px;text-shadow:0 2px 12px #000}
+.controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}.secondary{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line);padding:11px 16px;border-radius:12px;font:inherit;font-weight:750;cursor:pointer}.music{display:none;align-items:center;gap:10px;justify-content:center;margin:18px auto 0;padding:10px 14px;width:max-content;max-width:100%;border:1px solid rgba(255,215,119,.25);border-radius:14px;background:rgba(255,215,119,.06);color:var(--muted);font-size:12px}.music.show{display:flex}.music input{width:110px;accent-color:var(--gold)}.music strong{color:var(--gold);min-width:34px}.hint{text-align:center;color:#7e8aa8;font-size:11px;margin:16px 0 0;line-height:1.5}.footer{text-align:center;color:#75819e;font-size:11px;padding:28px 0 35px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{text-shadow:0 0 12px #ffd77755}50%{text-shadow:0 0 32px #ffd777dd}}
+.result h2{animation:pulse 2.6s infinite}
+@media(max-width:620px){.matchup{gap:9px}.portrait{height:190px}.fighter p{min-height:30px}.choose{font-size:12px;padding:11px 5px}.vs{font-size:20px}.intro{padding-top:25px}header{align-items:flex-start}.brand{font-size:12px}}
+@media(max-width:390px){.matchup{grid-template-columns:1fr;gap:14px}.vs{line-height:1}.portrait{height:230px}.fighter p{min-height:0}}
+</style>
+</head>
+<body>
+<header class="wrap"><div class="brand">✦ АРЕНА БУДУЩИХ БАТАЛИЙ</div><a class="back" href="index.html">← На главную</a></header>
+<main class="wrap">
+  <section class="intro"><div class="eyebrow">ГАЛАКТИКА ЖДЁТ ТВОЕГО РЕШЕНИЯ</div><h1>КТО ПОБЕДИТ?</h1><p>Первая дуэль легендарного противостояния. Голосуй за своего бойца — исход решится только после окончания общего голосования.</p></section>
+  <section class="arena">
+    <div class="matchup" id="matchup">
+      <article class="fighter"><div class="portrait"><img src="obi-wan-duel.jpg" alt="Оби-Ван Кеноби" onerror="this.style.opacity='.15'"></div><h2>Оби-Ван Кеноби</h2><p>Рыцарь-джедай · Светлая сторона</p><button class="choose obi" id="voteObi" onclick="castVote('obi')">⚔ Я ЗА ОБИ-ВАНА</button></article>
+      <div class="vs">VS</div>
+      <article class="fighter"><div class="portrait"><img src="darth-maul-duel.jpg" alt="Дарт Мол" onerror="this.style.opacity='.15'"></div><h2>Дарт Мол</h2><p>Убийца Квай-Гона · Тёмная сторона</p><button class="choose maul" id="voteMaul" onclick="castVote('maul')">☠ Я ЗА ДАРТА МОЛА</button></article>
+    </div>
+    <div class="timer" id="timer">ЗАГРУЗКА ТАЙМЕРА…</div>
+    <div class="status" id="status" aria-live="polite">Подключаемся к галактической сети голосования…</div>
+    <div class="vote-stats" id="voteStats">
+      <div class="stat"><strong id="obiCount">0</strong><span>ГОЛОСОВ ЗА ОБИ-ВАНА</span><div class="bar"><span class="obi-bar" id="obiBar"></span></div><small id="obiPercent">0%</small></div>
+      <div class="stat"><strong id="maulCount">0</strong><span>ГОЛОСОВ ЗА ДАРТА МОЛА</span><div class="bar"><span class="maul-bar" id="maulBar"></span></div><small id="maulPercent">0%</small></div>
+    </div>
+    <div class="result" id="result" aria-live="polite">
+      <div class="result-kicker">РЕЗУЛЬТАТ БИТВЫ</div><h2 id="winnerTitle">ПОБЕДА</h2>
+      <div class="victory-frame"><img id="obiVictory" src="obi-wan-victory.jpg" alt="Победный кадр Оби-Вана"><img id="maulVictory" src="darth-maul-victory.jpg" alt="Победный кадр Дарта Мола"><div class="victory-overlay" id="victoryCaption"></div></div>
+    </div>
+    <div class="controls"></div>
+    <div class="music" id="musicPanel"><span>♫ МУЗЫКА</span><input id="volume" type="range" min="0" max="100" value="100" aria-label="Громкость музыки"><strong id="volumeValue">100%</strong></div>
+    <p class="hint">Голоса общие для всех посетителей сайта. Один голос на одну анонимную сессию браузера. После завершения голосование закрывается.</p>
+  </section>
+</main>
+<footer class="wrap footer">АРЕНА БУДУЩИХ БАТАЛИЙ · ПЕРВАЯ ГЛАВА · ДАЛЬШЕ БОЛЬШЕ</footer>
+<audio id="battleMusic" src="battle-theme.mp3" preload="none" loop></audio>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://qwdouvpanjiuefdzldtp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_BjaJCE8nHVjpPwK3uW7MJQ_iWUBBtgi";
+const BATTLE_ID = 'obi-wan-vs-maul-1';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const music = document.getElementById('battleMusic');
+const volume = document.getElementById('volume');
+const volumeValue = document.getElementById('volumeValue');
+let endAt = null, finished = false, myVote = null;
+volume.addEventListener('input', () => { music.volume=Number(volume.value)/100; volumeValue.textContent=volume.value+'%'; });
+function setStatus(message){document.getElementById('status').textContent=message;}
+function formatTime(ms){const s=Math.max(0,Math.floor(ms/1000)),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;return (d?d+'д ':'')+[h,m,sec].map(x=>String(x).padStart(2,'0')).join(':');}
+function updateTimer(){if(!endAt)return;const left=new Date(endAt).getTime()-Date.now();document.getElementById('timer').textContent=left>0?'ДО КОНЦА: '+formatTime(left):'ГОЛОСОВАНИЕ ЗАВЕРШЕНО';if(left<=0&&!finished)refreshState();}
+function renderState(state){
+ endAt=state.ends_at;const obi=Number(state.obi_votes||0),maul=Number(state.maul_votes||0),total=obi+maul,op=total?Math.round(obi/total*100):0,mp=total?100-op:0;
+ document.getElementById('obiCount').textContent=obi;document.getElementById('maulCount').textContent=maul;document.getElementById('obiPercent').textContent=op+'%';document.getElementById('maulPercent').textContent=mp+'%';document.getElementById('obiBar').style.width=op+'%';document.getElementById('maulBar').style.width=mp+'%';
+ if(state.my_vote)myVote=state.my_vote;const closed=state.is_finished||new Date(endAt).getTime()<=Date.now();
+ ['voteObi','voteMaul'].forEach(id=>{const b=document.getElementById(id);b.disabled=closed||!!myVote;b.style.opacity=(closed||myVote)?'.55':'1';});
+ if(closed){setStatus('Голосование завершено. Итоговые результаты зафиксированы.');showWinner(obi>maul?'obi':maul>obi?'maul':'draw');}
+ else if(myVote)setStatus('Твой голос принят. Повторно проголосовать в этой сессии нельзя. Результаты обновляются для всех.');
+ else setStatus('Выбери сторону. До окончания таймера победитель не объявляется.');updateTimer();
+}
+function showWinner(side){if(finished)return;finished=true;const result=document.getElementById('result'),title=document.getElementById('winnerTitle'),caption=document.getElementById('victoryCaption');
+ if(side==='draw'){title.textContent='НИЧЬЯ';caption.textContent='СИЛЫ ОКАЗАЛИСЬ РАВНЫ';document.getElementById('obiVictory').classList.remove('active');document.getElementById('maulVictory').classList.remove('active');}
+ else{document.getElementById('obiVictory').classList.toggle('active',side==='obi');document.getElementById('maulVictory').classList.toggle('active',side==='maul');title.textContent=side==='obi'?'ОБИ-ВАН ПОБЕЖДАЕТ':'ДАРТ МОЛ ПОБЕЖДАЕТ';caption.textContent=side==='obi'?'СИЛА СВЕТА ВОСТОРЖЕСТВОВАЛА':'ТЁМНАЯ СТОРОНА ПОБЕДИЛА';}
+ result.classList.add('show');document.getElementById('musicPanel').classList.add('show');music.volume=Number(volume.value)/100;music.play().catch(()=>setStatus('Битва завершена. Нажми на страницу, чтобы разрешить воспроизведение музыки.'));
+}
+async function refreshState(){const {data,error}=await db.rpc('get_battle_state',{p_battle_id:BATTLE_ID});if(error){setStatus('Не удалось получить результаты: '+error.message);return;}if(data&&data.length)renderState(data[0]);}
+async function castVote(side){if(finished||myVote)return;['voteObi','voteMaul'].forEach(id=>document.getElementById(id).disabled=true);setStatus('Передаём голос в базу данных…');const {error}=await db.rpc('cast_vote',{p_battle_id:BATTLE_ID,p_choice:side});if(error)setStatus(error.message.includes('already voted')?'Ты уже голосовал в этой битве.':error.message);else{myVote=side;setStatus('Голос принят! Ждём окончания общего голосования.');}await refreshState();}
+async function init(){try{const {data,error}=await db.auth.getSession();if(error)throw error;if(!data.session){const {error:signError}=await db.auth.signInAnonymously();if(signError)throw signError;}await refreshState();setInterval(refreshState,5000);setInterval(updateTimer,1000);}catch(e){setStatus('Ошибка подключения. Проверь настройку Anonymous Sign-Ins в Supabase: '+e.message);document.getElementById('voteObi').disabled=true;document.getElementById('voteMaul').disabled=true;}}
+init();
+</script>
+</body>
+</html>
