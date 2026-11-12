@@ -388,6 +388,118 @@ section { padding:40px 0; }
   z-index:1;
 }
 
+
+/* ИТОГИ ГОЛОСОВАНИЯ */
+.result-card {
+  margin: 0 auto 34px;
+  max-width: 760px;
+  padding: 25px;
+  border: 1px solid rgba(255,215,119,.34);
+  border-radius: 22px;
+  background: linear-gradient(135deg,rgba(39,48,75,.96),rgba(22,29,49,.96));
+  box-shadow: 0 15px 45px rgba(0,0,0,.18);
+}
+.result-title {
+  text-align:center;
+  color:var(--gold);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:3px;
+  margin-bottom:18px;
+}
+.result-bars { display:grid; gap:16px; }
+.result-line {
+  display:grid;
+  grid-template-columns: 58px 1fr 58px;
+  gap:12px;
+  align-items:center;
+  font-weight:800;
+}
+.result-line .choice { color:var(--muted); }
+.result-line .percent { text-align:right; font-variant-numeric:tabular-nums; }
+.result-track {
+  height:12px;
+  background:rgba(255,255,255,.09);
+  border-radius:99px;
+  overflow:hidden;
+}
+.result-fill {
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.2,.8,.2,1);
+}
+.result-fill.yes { background:linear-gradient(90deg,#7bb8ff,#a5d0ff); }
+.result-fill.no { background:linear-gradient(90deg,#35c98b,#8cf0bd); }
+.result-meta {
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
+  color:var(--muted);
+  font-size:12px;
+}
+.result-victory {
+  text-align:center;
+  margin-top:18px;
+  color:var(--gold);
+  font-weight:900;
+  font-size:clamp(18px,3vw,24px);
+  text-shadow:0 0 18px rgba(255,215,119,.2);
+}
+.ceremony-button {
+  margin-top:18px;
+  padding:12px 18px;
+  border:1px solid rgba(255,215,119,.5);
+  border-radius:13px;
+  color:#201b10;
+  background:linear-gradient(100deg,#ffd777,#fff0b5);
+  font-weight:900;
+  box-shadow:0 0 0 rgba(255,215,119,0);
+}
+.ceremony-button:hover {
+  transform:translateY(-2px);
+  box-shadow:0 0 28px rgba(255,215,119,.25);
+}
+.hall-card.ceremony {
+  animation: hallReveal .9s ease both, hallGlow 2.8s ease-in-out 1s 2;
+}
+.hall-card.ceremony .hall-cup {
+  animation: cupEntrance 1.1s cubic-bezier(.2,.8,.2,1) both;
+}
+.hall-card.ceremony .hero-row {
+  animation: heroReveal .65s ease both;
+  animation-delay:calc(var(--i) * 95ms);
+}
+.hall-card.ceremony .hall-label {
+  animation: labelGlow 1.5s ease-in-out 2;
+}
+@keyframes hallReveal {
+  0% { opacity:.35; transform:translateY(22px) scale(.985); filter:brightness(.65); }
+  100% { opacity:1; transform:translateY(0) scale(1); filter:brightness(1); }
+}
+@keyframes hallGlow {
+  0%,100% { box-shadow:0 15px 45px rgba(0,0,0,.2),0 0 0 rgba(255,215,119,0); }
+  50% { box-shadow:0 15px 45px rgba(0,0,0,.2),0 0 38px rgba(255,215,119,.22); }
+}
+@keyframes cupEntrance {
+  0% { transform:translateY(-24px) scale(.55) rotate(-18deg); opacity:0; }
+  65% { transform:translateY(5px) scale(1.15) rotate(5deg); opacity:1; }
+  100% { transform:translateY(0) scale(1) rotate(0); opacity:1; }
+}
+@keyframes heroReveal {
+  0% { opacity:0; transform:translateX(-24px); }
+  100% { opacity:1; transform:translateX(0); }
+}
+@keyframes labelGlow {
+  0%,100% { text-shadow:0 0 0 rgba(255,215,119,0); }
+  50% { text-shadow:0 0 22px rgba(255,215,119,.85); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .hall-card.ceremony, .hall-card.ceremony * { animation:none !important; transition:none !important; }
+}
+
 .hall-top {
   text-align:center;
   margin-bottom:20px;
@@ -444,9 +556,9 @@ section { padding:40px 0; }
 
 .hero-name {
   flex:1;
-  color:#f5f7ff;
+  color:var(--gold);
   font-size:14px;
-  font-weight:650;
+  font-weight:800;
 }
 
 .hero-star {
@@ -649,6 +761,30 @@ footer {
   </div>
 </div>
 
+<section class="wrap" id="results">
+  <div class="result-card">
+    <div class="result-title">★ ИТОГИ ГОЛОСОВАНИЯ ★</div>
+    <div class="result-bars">
+      <div class="result-line">
+        <span class="choice">Да</span>
+        <div class="result-track"><div class="result-fill yes" id="yesBar"></div></div>
+        <span class="percent">43%</span>
+      </div>
+      <div class="result-line">
+        <span class="choice">Нет</span>
+        <div class="result-track"><div class="result-fill no" id="noBar"></div></div>
+        <span class="percent">57%</span>
+      </div>
+    </div>
+    <div class="result-meta">
+      <span>12 голосов — «Да»</span>
+      <span>16 голосов — «Нет»</span>
+      <span>Всего: 28 голосов</span>
+    </div>
+    <div class="result-victory">СОПРОТИВЛЕНИЕ ПОБЕДИЛО С ОТРЫВОМ В 14 ПРОЦЕНТНЫХ ПУНКТОВ!</div>
+  </div>
+</section>
+
 <section class="wrap" id="hall-of-fame">
 
   <div class="section-head">
@@ -671,6 +807,9 @@ footer {
       <div class="hall-subtitle">
         15 голосов. Одна позиция. Одна история.
       </div>
+      <button class="ceremony-button" id="ceremonyButton" onclick="openHeroesCeremony()">
+        ✦ ОТКРЫТЬ ЗАЛ СЛАВЫ
+      </button>
     </div>
 
     <div id="heroes-list"></div>
@@ -843,6 +982,9 @@ footer {
   </div>
 </footer>
 
+<!-- Положи свой музыкальный файл рядом с index.html и назови hero-theme.mp3 -->
+<audio id="heroMusic" src="hero-theme.mp3" preload="none" loop></audio>
+
 <div class="toast" id="toast" role="status" aria-live="polite">
   ✦ Твой выбор отмечен на этой странице! Теперь выбери «Нет» в исходном опросе Telegram.
 </div>
@@ -895,7 +1037,7 @@ const heroesList = document.getElementById("heroes-list");
 heroesList.innerHTML = heroes.map((name, i) => {
 
   return `
-    <div class="hero-row">
+    <div class="hero-row" style="--i:${i}">
       <div class="hero-number">
         ${String(i + 1).padStart(2, "0")}
       </div>
@@ -912,6 +1054,36 @@ heroesList.innerHTML = heroes.map((name, i) => {
 
 }).join("");
 
+
+/* ЦЕРЕМОНИЯ ОТКРЫТИЯ ЗАЛА СЛАВЫ */
+function openHeroesCeremony() {
+  const hall = document.querySelector(".hall-card");
+  const button = document.getElementById("ceremonyButton");
+  const music = document.getElementById("heroMusic");
+
+  hall.classList.remove("ceremony");
+  void hall.offsetWidth; // перезапуск анимации при повторном нажатии
+  hall.classList.add("ceremony");
+
+  button.textContent = "★ СОПРОТИВЛЕНИЕ ВЕЧНО ★";
+
+  // Браузеры разрешают запуск музыки после нажатия пользователя.
+  music.play().then(() => {
+    button.textContent = "♫ МУЗЫКА СОПРОТИВЛЕНИЯ ИГРАЕТ";
+  }).catch(() => {
+    button.textContent = "✦ ЗАЛ СЛАВЫ ОТКРЫТ";
+  });
+
+  hall.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+
+/* Анимация полос итогов при загрузке страницы */
+window.addEventListener("DOMContentLoaded", () => {
+  requestAnimationFrame(() => {
+    document.getElementById("yesBar").style.width = "43%";
+    document.getElementById("noBar").style.width = "57%";
+  });
+});
 
 /* УВЕДОМЛЕНИЕ ПРИ НАЖАТИИ «НЕТ» */
 
