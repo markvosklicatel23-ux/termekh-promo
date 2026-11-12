@@ -462,6 +462,29 @@ section { padding:40px 0; }
   transform:translateY(-2px);
   box-shadow:0 0 28px rgba(255,215,119,.25);
 }
+
+.volume-control {
+  display:none;
+  width:min(260px,100%);
+  margin:13px auto 0;
+  padding:9px 12px;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(255,215,119,.24);
+  border-radius:12px;
+  background:rgba(8,12,25,.48);
+  color:var(--gold);
+  font-size:12px;
+}
+.volume-control.visible { display:flex; animation:volumeFade .35s ease both; }
+.volume-control input[type="range"] {
+  flex:1;
+  min-width:60px;
+  accent-color:var(--gold);
+  cursor:pointer;
+}
+.volume-value { width:34px; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+@keyframes volumeFade { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
 .hall-card.ceremony {
   animation: hallReveal .9s ease both, hallGlow 2.8s ease-in-out 1s 2;
 }
@@ -810,6 +833,13 @@ footer {
       <button class="ceremony-button" id="ceremonyButton" onclick="openHeroesCeremony()">
         ✦ ОТКРЫТЬ ЗАЛ СЛАВЫ
       </button>
+      <div class="volume-control" id="volumeControl">
+        <span aria-hidden="true">♫</span>
+        <label for="musicVolume">ГРОМКОСТЬ</label>
+        <input id="musicVolume" type="range" min="0" max="100" value="100"
+               aria-label="Громкость музыки" oninput="changeMusicVolume(this.value)">
+        <span class="volume-value" id="volumeValue">100%</span>
+      </div>
     </div>
 
     <div id="heroes-list"></div>
@@ -1060,21 +1090,33 @@ function openHeroesCeremony() {
   const hall = document.querySelector(".hall-card");
   const button = document.getElementById("ceremonyButton");
   const music = document.getElementById("heroMusic");
+  const volumeControl = document.getElementById("volumeControl");
 
   hall.classList.remove("ceremony");
   void hall.offsetWidth; // перезапуск анимации при повторном нажатии
   hall.classList.add("ceremony");
 
+  // При каждом открытии режим прослушивания начинается с максимальной громкости.
+  music.volume = 1;
+  document.getElementById("musicVolume").value = 100;
+  document.getElementById("volumeValue").textContent = "100%";
+  volumeControl.classList.add("visible");
   button.textContent = "★ СОПРОТИВЛЕНИЕ ВЕЧНО ★";
 
   // Браузеры разрешают запуск музыки после нажатия пользователя.
   music.play().then(() => {
     button.textContent = "♫ МУЗЫКА СОПРОТИВЛЕНИЯ ИГРАЕТ";
   }).catch(() => {
-    button.textContent = "✦ ЗАЛ СЛАВЫ ОТКРЫТ";
+    button.textContent = "✦ ЗАЛ СЛАВЫ ОТКРЫТ — НАЖМИТЕ ЕЩЁ РАЗ ДЛЯ МУЗЫКИ";
   });
 
   hall.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+
+function changeMusicVolume(value) {
+  const volume = Math.max(0, Math.min(100, Number(value)));
+  document.getElementById("heroMusic").volume = volume / 100;
+  document.getElementById("volumeValue").textContent = volume + "%";
 }
 
 /* Анимация полос итогов при загрузке страницы */
